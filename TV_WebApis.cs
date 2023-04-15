@@ -1,14 +1,16 @@
-namespace TV_WebAPI.WebAPI
+using TV_WebAPI;
+namespace TV_WebAPI.ApiClass
 {
+
     #region public pack
 
-    /// <summary>
+    /// <summary>s
     /// 表征使用Post还是get
     /// </summary>
-    public enum ApiType
+    public class ApiAct
     {
-        Post = 1,
-        Get = 0
+        public delegate Task<T> POST<T>(Dictionary<string, string> keys, Server server);
+        public delegate Task<byte[]> GET(Dictionary<string, string> keys);
     };
 
     /// <summary>
@@ -36,12 +38,11 @@ namespace TV_WebAPI.WebAPI
     /// <summary>
     /// DDTV传入的标准格式
     /// </summary>
-    /// <typeparam name="T">指定的内容的泛型</typeparam>
     [System.Serializable]
     public class Pack
     {
         public Code code { get; set; } = Code.NotUsed;
-        public string cmd { get; set; } = "login_state";
+        public string cmd { get; set; } = string.Empty;
         public string message { get; set; } = string.Empty;
     }
 
@@ -54,14 +55,15 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class System_Resource
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
+
         public class Respon : Pack
         {
             public Data data { get; set; } = new();
         }
-
         public class Data
         {
             /// <summary>
@@ -81,60 +83,61 @@ namespace TV_WebAPI.WebAPI
             /// </summary>
             public List<HDDInfo>? HDDInfo { set; get; }
         }
-
-        public class MemInfo
-        {
-            /// <summary>
-            /// 总计内存大小
-            /// </summary>
-            public long Total { get; set; }
-            /// <summary>
-            /// 可用内存大小
-            /// </summary>
-            public long Available { get; set; }
-        }
-
-        public class HDDInfo
-        {
-            /// <summary>
-            /// 注册路径
-            /// </summary>
-            public string FileSystem { set; get; } = string.Empty;
-            /// <summary>
-            /// 硬盘大小
-            /// </summary>
-            public string Size { get; set; } = string.Empty;
-
-            /// <summary>
-            /// 已使用大小
-            /// </summary>
-            public string Used { get; set; } = string.Empty;
-
-            /// <summary>
-            /// 可用大小
-            /// </summary>
-            public string Avail { get; set; } = string.Empty;
-
-            /// <summary>
-            /// 使用率
-            /// </summary>
-            public string Usage { get; set; } = string.Empty;
-            /// <summary>
-            /// 挂载路径
-            /// </summary>
-            public string MountPath { set; get; } = string.Empty;
-        }
-
     }
+
+    public class MemInfo
+    {
+        /// <summary>
+        /// 总计内存大小
+        /// </summary>
+        public long Total { get; set; }
+        /// <summary>
+        /// 可用内存大小
+        /// </summary>
+        public long Available { get; set; }
+    }
+    public class HDDInfo
+    {
+        /// <summary>
+        /// 注册路径
+        /// </summary>
+        public string FileSystem { set; get; } = string.Empty;
+        /// <summary>
+        /// 硬盘大小
+        /// </summary>
+        public string Size { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 已使用大小
+        /// </summary>
+        public string Used { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 可用大小
+        /// </summary>
+        public string Avail { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 使用率
+        /// </summary>
+        public string Usage { get; set; } = string.Empty;
+        /// <summary>
+        /// 挂载路径
+        /// </summary>
+        public string MountPath { set; get; } = string.Empty;
+    }
+
 
     /// <summary>
     /// 获取系统运行情况
     /// </summary>
     public class System_info
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
+
         public class Respon : Pack
         {
             public Data data { get; set; } = new();
@@ -166,72 +169,73 @@ namespace TV_WebAPI.WebAPI
             /// 下载任务基础信息
             /// </summary>
             public Download_Info download_Info { get; set; } = new();
-            public class OS_Info
-            {
-                /// <summary>
-                /// 系统版本
-                /// </summary>
-                public string OS_Ver { get; set; } = string.Empty;
-                /// <summary>
-                /// 系统类型
-                /// </summary>
-                public string OS_Tpye { get; set; } = string.Empty;
-                /// <summary>
-                /// 使用内存量，单位bit
-                /// </summary>
-                public long Memory_Usage { get; set; }
-                /// <summary>
-                /// 运行时版本
-                /// </summary>
-                public string Runtime_Ver { get; set; } = string.Empty;
-                /// <summary>
-                /// 是否在交互模式下
-                /// </summary>
-                public bool UserInteractive { get; set; }
-                /// <summary>
-                /// 关联的用户
-                /// </summary>
-                public string Associated_Users { get; set; } = string.Empty;
-                /// <summary>
-                /// 工作目录
-                /// </summary>
-                public string Current_Directory { get; set; } = string.Empty;
-                /// <summary>
-                /// Core程序核心框架版本
-                /// </summary>
-                public string AppCore_Ver { set; get; } = string.Empty;
-                /// <summary>
-                /// Web程序核心框架版本
-                /// </summary>
-                public string WebCore_Ver { set; get; } = string.Empty;
-            }
-            public class Download_Info
-            {
-                /// <summary>
-                /// 下载中的任务数
-                /// </summary>
-                public int Downloading { get; set; }
-                /// <summary>
-                /// 下载结束的任务数
-                /// </summary>
-                public int Completed_Downloads { get; set; }
-            }
         }
     }
+
+    public class OS_Info
+    {
+        /// <summary>
+        /// 系统版本
+        /// </summary>
+        public string OS_Ver { get; set; } = string.Empty;
+        /// <summary>
+        /// 系统类型
+        /// </summary>
+        public string OS_Tpye { get; set; } = string.Empty;
+        /// <summary>
+        /// 使用内存量，单位bit
+        /// </summary>
+        public long Memory_Usage { get; set; }
+        /// <summary>
+        /// 运行时版本
+        /// </summary>
+        public string Runtime_Ver { get; set; } = string.Empty;
+        /// <summary>
+        /// 是否在交互模式下
+        /// </summary>
+        public bool UserInteractive { get; set; }
+        /// <summary>
+        /// 关联的用户
+        /// </summary>
+        public string Associated_Users { get; set; } = string.Empty;
+        /// <summary>
+        /// 工作目录
+        /// </summary>
+        public string Current_Directory { get; set; } = string.Empty;
+        /// <summary>
+        /// Core程序核心框架版本
+        /// </summary>
+        public string AppCore_Ver { set; get; } = string.Empty;
+        /// <summary>
+        /// Web程序核心框架版本
+        /// </summary>
+        public string WebCore_Ver { set; get; } = string.Empty;
+    }
+    public class Download_Info
+    {
+        /// <summary>
+        /// 下载中的任务数
+        /// </summary>
+        public int Downloading { get; set; }
+        /// <summary>
+        /// 下载结束的任务数
+        /// </summary>
+        public int Completed_Downloads { get; set; }
+    }
+
 
     /// <summary>
     /// 获取系统配置文件信息
     /// </summary>
     public class System_Config
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
         public class Respon : Pack
         {
-            public List<Config> Data
-            { get { return data; } set { data = value; } }
-            List<Config> data = new();
+            public List<Config> data { get; set; } = new();
         }
 
         public class Config
@@ -559,14 +563,15 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class System_Log
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new
-        Dictionary<string, dynamic>
-        {
-            {"page",0},
-            {"Quantity",0}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new
+        Dictionary<string, string>
+        {
+            {"page","0"},
+            {"Quantity","0"}
+        };
         public class Respon : Pack
         {
             Data data { get; set; } = new();
@@ -591,13 +596,14 @@ namespace TV_WebAPI.WebAPI
     public class System_LatestLog
     {
 
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
+        public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
         {
-            {"Quantity",0}
+            {"Quantity","0"}
         };
 
-        public Respon ResPon = new();
         public class Respon : Pack
         {
             public List<LogClass> Data
@@ -611,9 +617,10 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class System_QueryWebFirstStart
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
         public class Respon : Pack
         {
             public bool data { get; set; } = false;
@@ -625,12 +632,13 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class System_SetWebFirstStart
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
-        {
-            {"state",false}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"state","false"}
+        };
         public class Respon : Pack
         {
             public string data = string.Empty;
@@ -642,9 +650,11 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class System_QueryUserState
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
-        public class DRespon : Pack
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
+        public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
+        public class Respon : Pack
         {
             public bool data = false;
         }
@@ -659,12 +669,13 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Config_Transcod
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
-        {
-            {"state",false}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"state","false"}
+        };
         public class Respon : Pack
         {
             public string data { get; set; } = string.Empty;
@@ -676,12 +687,13 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Config_FileSplit
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
-        {
-            {"size",10240000}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"size","10240000"}
+        };
         public class Respon : Pack
         {
             public string data { get; set; } = string.Empty;
@@ -693,12 +705,13 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Config_DanmuRec
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
-        {
-            {"state",false}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"state","false"}
+        };
         public class Respon : Pack
         {
             public string data { get; set; } = string.Empty;
@@ -710,9 +723,10 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Config_GetFollow
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
         public class Respon : Pack
         {
             public List<follow> data { get; set; } = new();
@@ -734,9 +748,11 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class File_GetAllFileList
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
+
         public class Respon : Pack
         {
             public List<string> data { get; set; } = new();
@@ -748,8 +764,8 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class File_GetFile
     {
-        public static ApiType Type { get; } = ApiType.Get;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
+        //public static ApiAct Type { get; } = ApiAct.Get;
+        public Dictionary<string, string> Request = new Dictionary<string, string>
         {
             {"FilName",""}
         };
@@ -760,9 +776,10 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class File_GetFilePathList
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
         public class Respon : Pack
         {
             public List<string> data { get; set; } = new();
@@ -800,9 +817,11 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class File_GetTypeFileList
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
+
         public class Respon : Pack
         {
             public List<FileList> data { get; set; } = new();
@@ -824,8 +843,13 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class loginqr
     {
-        public static ApiType AType { get; } = ApiType.Get;
-        public Dictionary<string, dynamic> Request = new();
+        //public static ApiAct AType { get; } = ApiAct.Get;
+        public Dictionary<string, string> Request = new();
+
+        public class Respon : Pack
+        {
+            public Byte[]? data { get; set; }
+        }
     }
 
     /// <summary>
@@ -833,9 +857,10 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Login_Reset
     {
-        public static ApiType Type { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
         public class Respon : Pack
         {
             string data = string.Empty;
@@ -847,13 +872,14 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Login_State
     {
-        public static ApiType Type { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
+        public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server){return Act(Request, server );}
+        public Dictionary<string, string> Request = new Dictionary<string, string>
         {
             {"cmd", "login_state" }
         };
 
-        public Respon ResPon = new();
         public class Respon : Pack
         {
             public Data data = new();
@@ -895,7 +921,7 @@ namespace TV_WebAPI.WebAPI
         /// <summary>
         /// 房间号
         /// </summary>
-        public string RoomId { get; set; }= string.Empty;
+        public string RoomId { get; set; } = string.Empty;
         /// <summary>
         /// 用户UID
         /// </summary>
@@ -903,11 +929,11 @@ namespace TV_WebAPI.WebAPI
         /// <summary>
         /// 昵称
         /// </summary>
-        public string Name { get; set; }= string.Empty;
+        public string Name { get; set; } = string.Empty;
         /// <summary>
         /// 标题
         /// </summary>
-        public string Title { get; set; }= string.Empty;
+        public string Title { get; set; } = string.Empty;
         /// <summary>
         /// FLV大小限制使能
         /// </summary>
@@ -923,15 +949,15 @@ namespace TV_WebAPI.WebAPI
         /// <summary>
         /// 下载地址
         /// </summary>
-        public string Url { get; set; }= string.Empty;
+        public string Url { get; set; } = string.Empty;
         /// <summary>
         /// 下载的完整文件路径
         /// </summary>
-        public string FileName { set; get; }= string.Empty;
+        public string FileName { set; get; } = string.Empty;
         /// <summary>
         /// 文件夹路径
         /// </summary>
-        public string FilePath { set; get; }= string.Empty;
+        public string FilePath { set; get; } = string.Empty;
         /// <summary>
         /// 开始时间
         /// </summary>
@@ -944,15 +970,15 @@ namespace TV_WebAPI.WebAPI
         /// <summary>
         /// FLV文件头
         /// </summary>
-        public dynamic FlvHeader { set; get; }= string.Empty;
+        public dynamic FlvHeader { set; get; } = string.Empty;
         /// <summary>
         /// FLV头脚本数据
         /// </summary>
-        public dynamic FlvScriptTag { set; get; }= string.Empty;
+        public dynamic FlvScriptTag { set; get; } = string.Empty;
         /// <summary>
         /// WebRequest类的HTTP的实现
         /// </summary>
-        public dynamic HttpWebRequest { get; set; }= string.Empty;
+        public dynamic HttpWebRequest { get; set; } = string.Empty;
         /// <summary>
         /// 当前已下载字节数
         /// </summary>
@@ -992,11 +1018,11 @@ namespace TV_WebAPI.WebAPI
 
     public class LiteDownloads
     {
-        public string Token { get; set; }= string.Empty;
+        public string Token { get; set; } = string.Empty;
         /// <summary>
         /// 房间号
         /// </summary>
-        public string RoomId { get; set; }= string.Empty;
+        public string RoomId { get; set; } = string.Empty;
         /// <summary>
         /// 用户UID
         /// </summary>
@@ -1004,11 +1030,11 @@ namespace TV_WebAPI.WebAPI
         /// <summary>
         /// 标题
         /// </summary>
-        public string Title { get; set; }= string.Empty;
+        public string Title { get; set; } = string.Empty;
         /// <summary>
         /// 文件夹路径
         /// </summary>
-        public string FilePath { set; get; }= string.Empty;
+        public string FilePath { set; get; } = string.Empty;
         /// <summary>
         /// 开始时间(秒，Unix时间戳)
         /// </summary>
@@ -1028,9 +1054,11 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Rec_RecordingInfo
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
+
         public class Respon : Pack
         {
             public List<Downloads> data = new();
@@ -1042,9 +1070,10 @@ namespace TV_WebAPI.WebAPI
     /// </summary> 
     public class Rec_RecordingInfo_Lite
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
         public class Respon : Pack
         {
             public List<LiteDownloads> data = new();
@@ -1056,9 +1085,11 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Rec_RecordCompleteInfon
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
+
         public class Respon : Pack
         {
             public List<Downloads> data = new();
@@ -1070,9 +1101,10 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Rec_RecordCompleteInfon_Lite
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
         public class Respon : Pack
         {
             public List<LiteDownloads> data = new();
@@ -1084,12 +1116,13 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Rec_CancelDownload
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
-        {
-            {"UID",0}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"UID","0"}
+        };
         public class Respon : Pack
         {
             public string data = string.Empty;
@@ -1384,7 +1417,7 @@ namespace TV_WebAPI.WebAPI
         /// <summary>
         /// 录制的弹幕文件
         /// </summary>
-        public FileInfo? DanMuFile { set; get; } 
+        public FileInfo? DanMuFile { set; get; }
         /// <summary>
         /// 录制的SC记录文件
         /// </summary>
@@ -1440,9 +1473,10 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Room_AllInfo
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
         [Serializable]
         public class Respon : Pack
         {
@@ -1455,9 +1489,10 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Room_SummaryInfo
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new();
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new();
         [Serializable]
         public class Respon : Pack
         {
@@ -1470,12 +1505,14 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Room_Add
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
-        {
-            {"UID",100000000000}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"UID","100000000000"}
+        };
+
         public class Respon : Pack
         {
             public string data { get; set; } = string.Empty;
@@ -1487,12 +1524,14 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Room_Del
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
-        {
-            {"UID",100000000000}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"UID","100000000000"}
+        };
+
         public class Respon : Pack
         {
             public string data { get; set; } = string.Empty;
@@ -1504,13 +1543,15 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Room_AutoRec
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
-        {
-            {"UID",100000000000},
-            {"IsAutoRec",false}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"UID","100000000000"},
+            {"IsAutoRec","false"}
+        };
+
         public class Respon : Pack
         {
             public string data { get; set; } = string.Empty;
@@ -1522,13 +1563,14 @@ namespace TV_WebAPI.WebAPI
     /// </summary>
     public class Room_DanmuRec
     {
-        public static ApiType AType { get; } = ApiType.Post;
-        public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
-        {
-            {"UID",100000000000},
-            {"IsRecDanmu",false}
-        };
+        ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"UID","100000000000"},
+            {"IsAutoRec","false"}
+        };
         public class Respon : Pack
         {
             public string data { get; set; } = string.Empty;
@@ -1537,8 +1579,10 @@ namespace TV_WebAPI.WebAPI
 
     // public class User_Search
     // {
-    //     public static ApiType Type { get; } = ApiType.Post;
-    //     public Dictionary<string, dynamic> Request = new Dictionary<string, dynamic>
+    //             ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
+    //    public Respon ResPon = new();
+    //    public Task<Respon> ApiExecAsync(Server server){return Act(Request, server );}
+    //     public Dictionary<string, string> Request = new Dictionary<string, string>
     //     {
     //         {"keyword",""}
     //     };

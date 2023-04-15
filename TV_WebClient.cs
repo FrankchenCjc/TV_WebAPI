@@ -1,18 +1,15 @@
-﻿using System;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Text.Json;
+﻿using System.Text.Json;
 using TV_WebAPI.EncryptionModule;
-using TV_WebAPI.WebAPI;
 
 namespace TV_WebAPI
 {
     /// <summary>
     /// 这是一个DDTV_WEB_SERVER客户端的完成
     /// </summary>
-    public class TVWebC
+    public class Server
     {
-        HttpClient client = new();
+        
+
         /// <summary>
         /// 使用向DDTV_WEB_SERVER使用post的异步方法
         /// </summary>
@@ -20,16 +17,18 @@ namespace TV_WebAPI
         /// <returns>
         /// 参见API部分
         /// </returns>
-        public async Task<Respon> PostAsync<Respon>(Dictionary<string, dynamic> keys)
+        public static async Task<Respon> PostAsync<Respon>(Dictionary<string, string> keys,Server server)
         {
             string Time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0, 0)).TotalSeconds.ToString();
             string Sig = string.Empty;
+
             var valuePairs = new Dictionary<string, string>{
-                    { "accesskeyid", accessKeyID },
-                    { "accesskeysecret", accessKeySecret },
+                    { "accesskeyid", server.AccessKeyID },
+                    { "accesskeysecret", server.AccessKeySecret },
                     { "cmd", keys.GetValueOrDefault("cmd")},
                     { "time", Time },
                 };
+            
             foreach (var item in valuePairs)
                 Sig += $"{item.Key}={item.Value};";
             Sig = Encryption.SHA1_Encrypt(Sig);
@@ -44,14 +43,17 @@ namespace TV_WebAPI
 
             JsonSerializerOptions opz = new(JsonSerializerDefaults.Web);
 
-            client.BaseAddress = new Uri(serverURL);
+            HttpClient client = new();
+            client.BaseAddress = new Uri(server.ServerURL);
 
             var js =
                 await (
-                await client.PostAsync(
-                    valuePairs.GetValueOrDefault("cmd"),
-                    from)
-                ).Content.ReadAsStringAsync();
+                    await
+                    client.PostAsync(
+                        valuePairs.GetValueOrDefault("cmd"),
+                        from)
+                )
+                .Content.ReadAsStringAsync();
 
             var obj = JsonSerializer.Deserialize<Respon>(js, opz);
             if (obj == null)
@@ -66,7 +68,7 @@ namespace TV_WebAPI
         /// <returns>
         /// 将使用Dictionary返回相应 注意使用await
         /// </returns>
-        //public async Task<byte[]> GetAsync<T>(Dictionary<string, dynamic> keys) { throw new NotImplementedException("方法在该版本中尚未实现\n作者正在掉头发中。。。。"); }
+        public async Task<byte[]> GetAsync(Dictionary<string, string> keys) { throw new NotImplementedException("方法在该版本中尚未实现\n作者正在掉头发中。。。。"); }
 
         #region sever
         #region serverconfig
@@ -95,7 +97,7 @@ namespace TV_WebAPI
         /// <param name="serverurl">这个api不包含/api目录，请包含api目录避免问题</param>
         /// <param name="aid">AccessKeyID</param>
         /// <param name="asecret">AccessKeySecret</param>
-        public TVWebC(string serverurl, string aid, string asecret)
+        public Server(string serverurl, string aid, string asecret)
         {
             Renew(serverurl, aid, asecret);
         }
