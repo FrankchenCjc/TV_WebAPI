@@ -8,7 +8,7 @@ namespace TV_WebAPI
     /// </summary>
     public class Server
     {
-        
+
 
         /// <summary>
         /// 使用向DDTV_WEB_SERVER使用post的异步方法
@@ -17,7 +17,7 @@ namespace TV_WebAPI
         /// <returns>
         /// 参见API部分
         /// </returns>
-        public static async Task<Respon> PostAsync<Respon>(Dictionary<string, string> keys,Server server)
+        public static async Task<Respon> PostAsync<Respon>(Dictionary<string, string> keys, Server server)
         {
             string Time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0, 0)).TotalSeconds.ToString();
             string Sig = string.Empty;
@@ -28,7 +28,7 @@ namespace TV_WebAPI
                     { "cmd", keys.GetValueOrDefault("cmd")},
                     { "time", Time },
                 };
-            
+
             foreach (var item in valuePairs)
                 Sig += $"{item.Key}={item.Value};";
             Sig = Encryption.SHA1_Encrypt(Sig);
@@ -41,23 +41,20 @@ namespace TV_WebAPI
 
             FormUrlEncodedContent from = new(valuePairs);
 
-            JsonSerializerOptions opz = new(JsonSerializerDefaults.Web);
+            //JsonSerializerOptions opz = new(JsonSerializerDefaults.Web);
 
             HttpClient client = new();
-            client.BaseAddress = new Uri(server.ServerURL);
+            client.BaseAddress = new Uri(server.ServerURL + valuePairs.GetValueOrDefault("cmd"));
 
-            var js =
-                await (
-                    await
-                    client.PostAsync(
+            var a = await client.PostAsync(
                         valuePairs.GetValueOrDefault("cmd"),
-                        from)
-                )
-                .Content.ReadAsStringAsync();
+                        from);
 
-            var obj = JsonSerializer.Deserialize<Respon>(js, opz);
+            var js = await a.Content.ReadAsStringAsync();
+
+            var obj = JsonSerializer.Deserialize<Respon>(js);
             if (obj == null)
-                throw new Exception("");
+                throw new TVWebClientException("空的返回");
             return obj;
         }
 
@@ -68,7 +65,43 @@ namespace TV_WebAPI
         /// <returns>
         /// 将使用Dictionary返回相应 注意使用await
         /// </returns>
-        public async Task<byte[]> GetAsync(Dictionary<string, string> keys) { throw new NotImplementedException("方法在该版本中尚未实现\n作者正在掉头发中。。。。"); }
+        public static async Task<byte[]> GetAsync(Dictionary<string, string> keys, Server server)
+        {
+            string Time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0, 0)).TotalSeconds.ToString();
+            string Sig = string.Empty;
+
+            var valuePairs = new Dictionary<string, string>{
+                    { "accesskeyid", server.AccessKeyID },
+                    { "accesskeysecret", server.AccessKeySecret },
+                    { "cmd", keys.GetValueOrDefault("cmd")},
+                    { "time", Time },
+                };
+
+            foreach (var item in valuePairs)
+                Sig += $"{item.Key}={item.Value};";
+            Sig = Encryption.SHA1_Encrypt(Sig);
+
+            valuePairs.Remove("accesskeysecret");
+            valuePairs.Remove("cmd");
+            valuePairs.Add("sig", Sig);
+            foreach (var i in keys)
+                valuePairs.Add(i.Key, i.Value);
+
+            FormUrlEncodedContent from = new(valuePairs);
+
+            HttpClient client = new();
+            client.BaseAddress = new Uri(server.ServerURL + valuePairs.GetValueOrDefault("cmd"));
+
+            var a = await client.PostAsync(
+                        valuePairs.GetValueOrDefault("cmd"),
+                        from);
+
+            byte[] obj = await a.Content.ReadAsByteArrayAsync();
+
+            if (obj == null)
+                throw new TVWebClientException("空的返回");
+            return obj;
+        }
 
         #region sever
         #region serverconfig

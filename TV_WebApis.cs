@@ -10,7 +10,7 @@ namespace TV_WebAPI.ApiClass
     public class ApiAct
     {
         public delegate Task<T> POST<T>(Dictionary<string, string> keys, Server server);
-        public delegate Task<byte[]> GET(Dictionary<string, string> keys);
+        public delegate Task<byte[]> GET(Dictionary<string, string> keys, Server server);
     };
 
     /// <summary>
@@ -764,6 +764,8 @@ namespace TV_WebAPI.ApiClass
     /// </summary>
     public class File_GetFile
     {
+        ApiAct.GET Act = new(Server.GetAsync);
+        public Task<byte[]> ApiExecAsync(Server server) { return Act(Request, server); }
         //public static ApiAct Type { get; } = ApiAct.Get;
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
@@ -843,9 +845,9 @@ namespace TV_WebAPI.ApiClass
     /// </summary>
     public class loginqr
     {
-        //public static ApiAct AType { get; } = ApiAct.Get;
+        ApiAct.GET Act = new(Server.GetAsync);
         public Dictionary<string, string> Request = new();
-
+        public Task<byte[]> ApiExecAsync(Server server) { return Act(Request, server); }
         public class Respon : Pack
         {
             public Byte[]? data { get; set; }
@@ -1143,7 +1145,7 @@ namespace TV_WebAPI.ApiClass
         /// <summary>
         /// 主播简介
         /// </summary>
-        public string description { get; set; } = string.Empty;
+        public string? description { get; set; } 
         /// <summary>
         /// 关注数
         /// </summary>
@@ -1476,7 +1478,10 @@ namespace TV_WebAPI.ApiClass
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
         public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"cmd", "room_allinfo" }
+        };
         [Serializable]
         public class Respon : Pack
         {
@@ -1492,7 +1497,10 @@ namespace TV_WebAPI.ApiClass
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
         public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public Dictionary<string, string> Request = new Dictionary<string, string>
+        {
+            {"cmd", "room_summaryinfo" }
+        };
         [Serializable]
         public class Respon : Pack
         {
