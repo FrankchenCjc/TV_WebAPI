@@ -57,8 +57,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","system_resource"}
+        };
 
         public class Respon : Pack
         {
@@ -135,8 +138,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","system_info"}
+        };
 
         public class Respon : Pack
         {
@@ -231,8 +237,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","system_config"}
+        };
         public class Respon : Pack
         {
             public List<Config> data { get; set; } = new();
@@ -565,10 +574,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new
         Dictionary<string, string>
         {
+            {"cmd","system_log"},
             {"page","0"},
             {"Quantity","0"}
         };
@@ -598,9 +608,10 @@ namespace TV_WebAPI.ApiClass
 
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","system_latestlog"},
             {"Quantity","0"}
         };
 
@@ -619,8 +630,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","system_querywebfirststart"},
+        };
         public class Respon : Pack
         {
             public bool data { get; set; } = false;
@@ -634,9 +648,10 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","System_SetWebFirstStart"},
             {"state","false"}
         };
         public class Respon : Pack
@@ -652,8 +667,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","System_QueryUserState"},
+        };
         public class Respon : Pack
         {
             public bool data = false;
@@ -671,9 +689,10 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","Config_Transcod"},
             {"state","false"}
         };
         public class Respon : Pack
@@ -689,9 +708,10 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","Config_FileSplit"},
             {"size","10240000"}
         };
         public class Respon : Pack
@@ -707,9 +727,10 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","Config_DanmuRec"},
             {"state","false"}
         };
         public class Respon : Pack
@@ -725,8 +746,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","Config_GetFollow"},
+        };
         public class Respon : Pack
         {
             public List<follow> data { get; set; } = new();
@@ -750,8 +774,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","File_GetAllFileList"},
+        };
 
         public class Respon : Pack
         {
@@ -769,6 +796,7 @@ namespace TV_WebAPI.ApiClass
         //public static ApiAct Type { get; } = ApiAct.Get;
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","File_GetFile"},
             {"FilName",""}
         };
     }
@@ -780,8 +808,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","File_GetFilePathList"},
+        };
         public class Respon : Pack
         {
             public List<string> data { get; set; } = new();
@@ -821,8 +852,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","File_GetTypeFileList"},
+        };
 
         public class Respon : Pack
         {
@@ -861,8 +895,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","Login_Reset"},
+        };
         public class Respon : Pack
         {
             string data = string.Empty;
@@ -876,7 +913,7 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server){return Act(Request, server );}
+        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
             {"cmd", "login_state" }
@@ -1058,8 +1095,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","Rec_RecordingInfo"},
+        };
 
         public class Respon : Pack
         {
@@ -1074,8 +1114,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","Rec_RecordingInfo_Lite"},
+        };
         public class Respon : Pack
         {
             public List<LiteDownloads> data = new();
@@ -1089,8 +1132,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","Rec_RecordingInfo_Lite"},
+        };
 
         public class Respon : Pack
         {
@@ -1105,8 +1151,11 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
-        public Dictionary<string, string> Request = new();
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
+        public Dictionary<string, string> Request = new()
+        {
+            {"cmd","Rec_RecordCompleteInfon_Lite"},
+        };
         public class Respon : Pack
         {
             public List<LiteDownloads> data = new();
@@ -1120,9 +1169,10 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","Rec_RecordCompleteInfon_Lite"},
             {"UID","0"}
         };
         public class Respon : Pack
@@ -1145,7 +1195,7 @@ namespace TV_WebAPI.ApiClass
         /// <summary>
         /// 主播简介
         /// </summary>
-        public string? description { get; set; } 
+        public string? description { get; set; }
         /// <summary>
         /// 关注数
         /// </summary>
@@ -1477,7 +1527,7 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
             {"cmd", "room_allinfo" }
@@ -1496,7 +1546,7 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
             {"cmd", "room_summaryinfo" }
@@ -1515,9 +1565,10 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","Room_Add"},
             {"UID","100000000000"}
         };
 
@@ -1534,9 +1585,10 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","Room_Del"},
             {"UID","100000000000"}
         };
 
@@ -1553,9 +1605,10 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","Room_AutoRec"},
             {"UID","100000000000"},
             {"IsAutoRec","false"}
         };
@@ -1573,9 +1626,10 @@ namespace TV_WebAPI.ApiClass
     {
         ApiAct.POST<Respon> Act = new(Server.PostAsync<Respon>);
         public Respon ResPon = new();
-        public Task<Respon> ApiExecAsync(Server server) { return Act(Request, server); }
+        public async Task ApiExecAsync(Server server) { ResPon = await Act(Request, server); }
         public Dictionary<string, string> Request = new Dictionary<string, string>
         {
+            {"cmd","Room_DanmuRec"},
             {"UID","100000000000"},
             {"IsAutoRec","false"}
         };
