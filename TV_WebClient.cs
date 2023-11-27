@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
+using System.Security.Cryptography;
+using System.Text;
 using TV_WebAPI.ApiClass;
-using TV_WebAPI.EncryptionModule;
 
 namespace TV_WebAPI
 {
@@ -18,48 +19,41 @@ namespace TV_WebAPI
         /// <returns>
         /// 参见API部分
         /// </returns>
-        public async Task<U?> PostAsync<U, T>(T req)
+        public async Task<Pack<U>>? PostAsync<U, T>(T req)
         where T : PostAPI
-        where U : PostAPI.APack
+        where U : new()
         {
             //JsonSerializerOptions opz = new(JsonSerializerDefaults.Web);
-
+            SHA1 sha = SHA1.Create();
             HttpClient client = new();
-            string Sig = string.Empty;
-
-            string Time = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0, 0)).TotalSeconds.ToString();
-
+            client.BaseAddress = new Uri(ServerURL);
 
             var valuePairs = new Dictionary<string, string>{
                     { "accesskeyid", AccessKeyID },
                     { "accesskeysecret", AccessKeySecret },
                     { "cmd", req.GetType().ToString().Split('.').Last().ToLower()},
-                    { "time", Time },
+                    { "time", (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0, 0)).TotalSeconds.ToString()},
                 };
-
-            foreach (var item in valuePairs)
-                Sig += $"{item.Key}={item.Value};";
-            Sig = Encryption.SHA1_Encrypt(Sig);
+            var Sig = string.Join(
+                string.Empty,
+                sha.ComputeHash(Encoding.UTF8.GetBytes(
+                        string.Join(string.Empty,
+                            valuePairs.Select((P) => $"{P.Key}={P.Value};"))))
+                   .Select((B) => string.Format("{0:x2}", B))
+                ).ToUpper();
 
             valuePairs.Remove("accesskeysecret");
-
             valuePairs.Add("sig", Sig);
-            foreach (var i in req.Selfval)
-                valuePairs.Add(i.Key, i.Value);
 
-            client.BaseAddress = new Uri(ServerURL + valuePairs.GetValueOrDefault("cmd"));
-
+            req.Selfval.ToList().ForEach((i) => valuePairs.Append(i));
             FormUrlEncodedContent from = new(valuePairs);
 
-            U? rt;
-
-            rt = JsonSerializer.Deserialize<U>(
-                await (
-                    await client.PostAsync(valuePairs.GetValueOrDefault("cmd"), from)
-                    )
+            var pack = JsonSerializer.Deserialize<Pack<U>>(
+                await (await client.PostAsync(valuePairs.GetValueOrDefault("cmd"), from))
                     .Content
                     .ReadAsStringAsync());
-            return rt;
+
+            return pack;
         }
 
         #region sever
@@ -139,18 +133,20 @@ namespace TV_WebAPI.ApiClass
     /// <summary>
     /// DDTV传入的标准格式
     /// </summary>
+    /// 
+    [Serializable]
+    public class Pack<TData>
+    where TData : new()
+    {
+        public int code { get; set; } = 0;
+        public string cmd { get; set; } = string.Empty;
+        public string message { get; set; } = string.Empty;
+        public TData? data { get; set; }
+    }
+
     [Serializable]
     public abstract class PostAPI
     {
-        public APack Pack { get; set; } = new();
-        [Serializable]
-        public class APack
-        {
-            public int code { get; set; } = 0;
-            public string cmd { get; set; } = string.Empty;
-            public string message { get; set; } = string.Empty;
-            public ApiData? data { get; set; }
-        }
         public virtual Dictionary<string, string> Selfval { get; set; } = new();
         public abstract class ApiData { }
     }
