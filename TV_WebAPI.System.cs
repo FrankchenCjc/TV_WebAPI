@@ -1,3 +1,5 @@
+using System.Security;
+
 namespace TV_WebAPI.ApiClass.System
 {
     /// <summary>
@@ -7,7 +9,7 @@ namespace TV_WebAPI.ApiClass.System
     [Serializable]
     public class System_Resource : PostAPI
     {
-        public new class ApiData
+        public class ApiData
         {
             /// <summary>
             /// 平台
@@ -76,7 +78,7 @@ namespace TV_WebAPI.ApiClass.System
     /// </summary>
     public class System_info : PostAPI
     {
-        public new class ApiData
+        public class ApiData
         {
             /// <summary>
             /// 当前DDTV版本号
@@ -158,11 +160,10 @@ namespace TV_WebAPI.ApiClass.System
 
     /// <summary>
     /// 获取系统配置文件信息
+    /// ApiData List<System_Config.Config>
     /// </summary>
     public class System_Config : PostAPI
     {
-        public new List<Config> ApiData;
-
         public class Config
         {
             /// <summary>
@@ -388,18 +389,19 @@ namespace TV_WebAPI.ApiClass.System
 
     /// <summary>
     /// 返回一个可以自行设定的初始化状态值(用于前端自行判断)
+    /// ApiData bool
     /// </summary>
     public class System_QueryWebFirstStart : PostAPI
     {
-        public new bool ApiData;
+        public Type ApiData = typeof(bool);
     }
 
     /// <summary>
     /// 设置初始化状态值
+    /// ApiData string
     /// </summary>
     public class System_SetWebFirstStart : PostAPI
     {
-        public new string ApiData;
         public new Dictionary<string, string> Selfval = new Dictionary<string, string>
         {
             {"state","false"}
@@ -408,10 +410,8 @@ namespace TV_WebAPI.ApiClass.System
 
     /// <summary>
     /// 用于判断用户登陆状态是否有效
+    /// ApiData bool
     /// </summary>
-    public class System_QueryUserState : PostAPI
-    {
-        public new bool ApiData;
-    }
+    public class System_QueryUserState : PostAPI { }
 
 }
