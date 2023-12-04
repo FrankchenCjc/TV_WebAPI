@@ -1,16 +1,18 @@
-using TV_WebAPI.ApiClass;
-using TV_WebAPI.ApiClass.Rec;
-namespace TV_WebAPI.ApiClass.Room
+namespace DDTVWebAPI
 {
-
-    /// <summary>
-    /// 获取房间详细配置信息
-    /// List<Room_AllInfo.RoomInfo>
-    /// </summary>
-    public class Room_AllInfo : PostAPI
+    public partial class DDTVServer
     {
+        /// <summary>
+        /// 获取房间详细配置信息
+        /// </summary>
+        /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
+        public async Task<Pack<List<RoomDetail>?>> GetAllRoomDetail()
+        {
+            return await PostAsync<List<RoomDetail>>("Room_AllInfo", null);
+        }
+
         [Serializable]
-        public class RoomInfo
+        public class RoomDetail
         {
             /// <summary>
             /// 标题
@@ -306,16 +308,21 @@ namespace TV_WebAPI.ApiClass.Room
                 public FileInfo? GiftFile { set; get; }
             }
         }
-    }
 
-    /// <summary>
-    /// 获取房间简要配置信息
-    /// List<Room_SummaryInfo.BRoomInfo>
-    /// </summary>
-    public class Room_SummaryInfo : PostAPI
-    {
+        /// <summary>
+        /// 获取房间简要配置信息
+        /// </summary>
+        /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
+        public async Task<Pack<List<RoomBrief>?>> GetAllRoomBrief()
+        {
+            return await PostAsync<List<RoomBrief>>("Room_SummaryInfo", null);
+        }
+
+        /// <summary>
+        /// 房间简要配置信息
+        /// </summary>
         [Serializable]
-        public class BRoomInfo
+        public class RoomBrief
         {
             /// <summary>
             /// 直播间房间号(直播间实际房间号)
@@ -349,53 +356,50 @@ namespace TV_WebAPI.ApiClass.Room
             /// 下载标识符
             /// </summary>
             public bool IsDownload { set; get; } = false;
+
+
         }
 
-    }
-
-    /// <summary>
-    /// 增一个加房间配置
-    /// ApiData string
-    /// </summary>
-    public class Room_Add : PostAPI
-    {
-        public new Dictionary<string, string> Selfval = new Dictionary<string, string>
-        {{"UID","100000000000"}};
-    }
-
-    /// <summary>
-    /// 删除一个房间配置
-    /// ApiData string
-    /// </summary>
-    public class Room_Del : PostAPI
-    {
-        public new Dictionary<string, string> Selfval = new Dictionary<string, string>
-        {{"UID","100000000000"}};
-    }
-
-    /// <summary>
-    /// 修改房间自动录制配置信息
-    /// ApiData string
-    /// </summary>
-    public class Room_AutoRec : PostAPI
-    {
-        public new Dictionary<string, string> Selfval = new Dictionary<string, string>
+        /// <summary>
+        /// 增一个加房间配置
+        /// </summary>
+        /// <param name="UID">房间的UID</param>
+        /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
+        public async Task<Pack<string?>> AddRoom(long UID)
         {
-            {"UID","100000000000"},
-            {"IsAutoRec","false"}
-        };
-    }
+            return await PostAsync<string?>("Room_Add", new Dictionary<string, string> { { "UID", UID.ToString() } });
+        }
 
-    /// <summary>
-    /// 修改房间弹幕录制配置信息
-    /// ApiData string
-    /// </summary>
-    public class Room_DanmuRec : PostAPI
-    {
-        public Dictionary<string, string> Request = new Dictionary<string, string>
+        /// <summary>
+        /// 删除一个房间配置
+        /// </summary>
+        /// <param name="UID">房间的UID</param>
+        /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
+        public async Task<Pack<string?>> DelRoom(long UID)
         {
-            {"UID","100000000000"},
-            {"IsAutoRec","false"}
-        };
+            return await PostAsync<string?>("Room_Del", new Dictionary<string, string> { { "UID", UID.ToString() } });
+        }
+
+        /// <summary>
+        /// 设置自动录制
+        /// </summary>
+        /// <param name="UID">用户UID</param>
+        /// <param name="Value">设定值</param>
+        /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
+        public async Task<Pack<string?>> SetAutoRec(long UID, bool Value)
+        {
+            return await PostAsync<string?>("Room_AutoRec", new Dictionary<string, string> { { "UID", UID.ToString() }, { "IsAutoRec", Value.ToString() } });
+        }
+
+        /// <summary>
+        /// 设置录制弹幕
+        /// </summary>
+        /// <param name="UID">用户UID</param>
+        /// <param name="Value">设定值</param>
+        /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
+        public async Task<Pack<string?>> SetRecDanmu(long UID, bool Value)
+        {
+            return await PostAsync<string?>("Room_DanmuRec", new Dictionary<string, string> { { "UID", UID.ToString() }, { "IsAutoRec", Value.ToString() } });
+        }
     }
 }

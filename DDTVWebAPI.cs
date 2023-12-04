@@ -1,24 +1,13 @@
 ﻿using System.Text.Json;
 using System.Security.Cryptography;
 using System.Text;
-using TV_WebAPI.ApiClass;
+using DDTVWebAPI;
 
-namespace TV_WebAPI
+namespace DDTVWebAPI
 {
-    /// <summary>
-    /// 这是一个DDTV_WEB_SERVER客户端的完成
-    /// </summary>
-    public class Server
+    public partial class DDTVServer
     {
-        /// <summary>
-        /// Post方法
-        /// </summary>
-        /// <typeparam name="U">ApiData 类型，详见各个API说明</typeparam>
-        /// <typeparam name="T">Api类型</typeparam>
-        /// <param name="req">带有参数的API申请数据</param>
-        /// <returns></returns>
-        public async Task<Pack<U>>? PostAsync<U, T>(T req)
-        where T : PostAPI
+        public async Task<Pack<T?>> PostAsync<T>(string ApiCmd, Dictionary<string, string>? Selfval)
         {
             //创建需要的类
             //JsonSerializerOptions opz = new(JsonSerializerDefaults.Web);
@@ -29,7 +18,7 @@ namespace TV_WebAPI
             var valuePairs = new Dictionary<string, string>{
                     { "accesskeyid", AccessKeyID },
                     { "accesskeysecret", AccessKeySecret },
-                    { "cmd", req.GetType().ToString().Split('.').Last().ToLower()},
+                    { "cmd", ApiCmd},
                     { "time", (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0, 0)).TotalSeconds.ToString()},
                 };
             var Sig = string.Join(
@@ -43,10 +32,10 @@ namespace TV_WebAPI
             //构造from表
             valuePairs.Remove("accesskeysecret");
             valuePairs.Add("sig", Sig);
-            req.Selfval.ToList().ForEach((i) => valuePairs.Append(i));
+            Selfval?.ToList().ForEach((i) => valuePairs.Add(i.Key, i.Value));
             FormUrlEncodedContent from = new(valuePairs);
             //请求并逆序列化
-            var pack = JsonSerializer.Deserialize<Pack<U>>(
+            var pack = JsonSerializer.Deserialize<Pack<T?>>(
                 await (await client.PostAsync(valuePairs.GetValueOrDefault("cmd"), from))
                     .Content
                     .ReadAsStringAsync());
@@ -72,7 +61,7 @@ namespace TV_WebAPI
         /// <param name="serverurl">这个api不包含/api目录，请包含api目录避免问题</param>
         /// <param name="aid">AccessKeyID</param>
         /// <param name="asecret">AccessKeySecret</param>
-        public Server(string serverurl, string aid, string asecret)
+        public DDTVServer(string serverurl, string aid, string asecret)
         {
             ChangeServer(serverurl, aid, asecret);
         }
