@@ -34,13 +34,17 @@ namespace DDTVWebAPI
             public Code code { get; set; } = 0;
             public string cmd { get; set; } = string.Empty;
             public string message { get; set; } = string.Empty;
-            public TData? data { get; set; } = default(TData);
-
-            public TData? GetData()
+            public TData data
             {
-                if (code == Code.Success) return data;
-                else throw new Exception(message);
+                get
+                {
+                    return code == Code.Success
+                        ? _data ?? throw new Exception("空的值")
+                        : throw new Exception(this?.message ?? throw new Exception("空的值"));
+                }
+                set { _data = value; }
             }
+            private TData? _data;
         }
     }
 }

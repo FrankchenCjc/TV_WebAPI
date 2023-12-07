@@ -2,43 +2,41 @@
 using System.Security.Cryptography;
 using System.Text;
 using DDTVWebAPI;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace DDTVWebAPI
 {
     public partial class DDTVServer
     {
-        public async Task<Pack<T?>> PostAsync<T>(string ApiCmd, Dictionary<string, string>? Selfval)
+        readonly SHA1 _sha = SHA1.Create();
+        readonly HttpClient _client = new();
+        public async Task<Pack<T>> PostAsync<T>(string ApiCmd, Dictionary<string, string>? Selfval)
         {
-            //创建需要的类
-            //JsonSerializerOptions opz = new(JsonSerializerDefaults.Web);
-            SHA1 sha = SHA1.Create();
-            HttpClient client = new();
-            client.BaseAddress = new Uri(ServerURL);
             //计算SIG
             var valuePairs = new Dictionary<string, string>{
                     { "accesskeyid", AccessKeyID },
                     { "accesskeysecret", AccessKeySecret },
-                    { "cmd", ApiCmd},
+                    { "cmd", ApiCmd.ToLower()},
                     { "time", (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0, 0)).TotalSeconds.ToString()},
                 };
-            var Sig = string.Join(
+            var sig = string.Join(
                 string.Empty,
-                valuePairs.Select((P) => $"{P.Key}={P.Value};"));
-            Sig = string.Join(
+                valuePairs.Select((p) => $"{p.Key}={p.Value};"));
+            sig = string.Join(
                 string.Empty,
-                sha.ComputeHash(Encoding.UTF8.GetBytes(Sig))
-                   .Select((B) => string.Format("{0:x2}", B))
+                _sha.ComputeHash(Encoding.UTF8.GetBytes(sig))
+                   .Select((b) => string.Format("{0:x2}", b))
                 ).ToUpper();
             //构造from表
             valuePairs.Remove("accesskeysecret");
-            valuePairs.Add("sig", Sig);
+            valuePairs.Add("sig", sig);
             Selfval?.ToList().ForEach((i) => valuePairs.Add(i.Key, i.Value));
             FormUrlEncodedContent from = new(valuePairs);
             //请求并逆序列化
-            var pack = JsonSerializer.Deserialize<Pack<T?>>(
-                await (await client.PostAsync(valuePairs.GetValueOrDefault("cmd"), from))
+            var jss = await (await _client.PostAsync(valuePairs.GetValueOrDefault("cmd"), from))
                     .Content
-                    .ReadAsStringAsync());
+                    .ReadAsStringAsync();
+            var pack = JsonSerializer.Deserialize<Pack<T>>(jss) ?? throw new Exception("空结果");
             //回传结果
             return pack;
         }
@@ -64,6 +62,7 @@ namespace DDTVWebAPI
         public DDTVServer(string serverurl, string aid, string asecret)
         {
             ChangeServer(serverurl, aid, asecret);
+            _client.BaseAddress = new Uri(ServerURL);
         }
     }
 }

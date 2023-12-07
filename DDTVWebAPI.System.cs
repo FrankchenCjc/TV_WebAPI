@@ -8,9 +8,9 @@ namespace DDTVWebAPI
         /// 获取系统硬件资源使用情况
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<ResourceData?>> GetSystemResourceInfo()
+        public async Task<Pack<ResourceData>> GetSystemResourcesInfo()
         {
-            return await PostAsync<ResourceData>("System_Resource", null);
+            return await PostAsync<ResourceData>("System_Resources", null);
         }
         /// <summary>
         /// 系统硬件资源使用情况
@@ -82,7 +82,7 @@ namespace DDTVWebAPI
         /// 获取系统运行情况
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<SysData?>> GetSystemInfo()
+        public async Task<Pack<SysData>> GetSystemInfo()
         {
             return await PostAsync<SysData>("System_info", null);
         }
@@ -173,7 +173,7 @@ namespace DDTVWebAPI
         /// 获取系统配置文件信息
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<Config>?>> GetSysConfig()
+        public async Task<Pack<List<Config>>> GetSysConfig()
         {
             return await PostAsync<List<Config>>("System_Config", null);
         }
@@ -405,9 +405,9 @@ namespace DDTVWebAPI
         }
 
 
-        public async Task<Pack<bool?>> IsWebFirstStart()
+        public async Task<Pack<bool>> IsWebFirstStart()
         {
-            return await PostAsync<bool?>("System_QueryWebFirstStart", null);
+            return await PostAsync<bool>("System_QueryWebFirstStart", null);
         }
 
         /// <summary>
@@ -415,18 +415,18 @@ namespace DDTVWebAPI
         /// </summary>
         /// <param name="value">值</param>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<string?>> SetWebFirstStart(bool value)
+        public async Task<Pack<string>> SetWebFirstStart(bool value)
         {
-            return await PostAsync<string?>("System_SetWebFirstStart", new Dictionary<string, string> { { "state", value.ToString() } });
+            return await PostAsync<string>("System_SetWebFirstStart", new Dictionary<string, string> { { "state", value.ToString() } });
         }
 
         /// <summary>
         /// 用于判断用户登陆状态是否有效
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<bool?>> QueryUserState()
+        public async Task<Pack<bool>> QueryUserState()
         {
-            return await PostAsync<bool?>("System_QueryUserState", null);
+            return await PostAsync<bool>("System_QueryUserState", null);
         }
 
     }

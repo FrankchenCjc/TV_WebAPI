@@ -141,7 +141,7 @@ namespace DDTVWebAPI
         /// 获取下载中的任务情况详细情况
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<Downloads>?>> GetAllRecordingInfo()
+        public async Task<Pack<List<Downloads>>> GetAllRecordingInfo()
         {
             return await PostAsync<List<Downloads>>("Rec_RecordingInfo", null);
         }
@@ -150,7 +150,7 @@ namespace DDTVWebAPI
         /// 获取下载中的任务情况简略情况
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<BriefDownloads>?>> GetBriefRecordingInfo()
+        public async Task<Pack<List<BriefDownloads>>> GetBriefRecordingInfo()
         {
             return await PostAsync<List<BriefDownloads>>("Rec_RecordingInfo_Lite", null);
 
@@ -160,7 +160,7 @@ namespace DDTVWebAPI
         /// 获取已经完成的任务详细情况
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<Downloads>?>> GetAllRecordCompleteInfo()
+        public async Task<Pack<List<Downloads>>> GetAllRecordCompleteInfo()
         {
             return await PostAsync<List<Downloads>>("Rec_RecordCompleteInfon", null);
         }
@@ -169,7 +169,7 @@ namespace DDTVWebAPI
         /// 获取已经完成的任务简略情况
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<BriefDownloads>?>> GetBriefRecordCompleteInfo()
+        public async Task<Pack<List<BriefDownloads>>> GetBriefRecordCompleteInfo()
         {
             return await PostAsync<List<BriefDownloads>>("Rec_RecordCompleteInfon_Lite", null);
         }
@@ -179,7 +179,7 @@ namespace DDTVWebAPI
         /// </summary>
         /// <param name="UID">要取消的房间UID</param>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<string?>> CancelDownload(long UID)
+        public async Task<Pack<string>> CancelDownload(long UID)
         {
             return await PostAsync<string>("Rec_CancelDownload", new Dictionary<string, string> { { "UID", UID.ToString() } });
         }

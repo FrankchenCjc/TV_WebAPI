@@ -7,7 +7,7 @@ namespace DDTVWebAPI
         /// </summary>
         /// <param name="value">设定值</param>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<string?>> ConfigTranscod(bool value)
+        public async Task<Pack<string>> ConfigTranscod(bool value)
         {
             return await PostAsync<string>("config_transcod", new Dictionary<string, string> { { "state", value.ToString() } });
         }
@@ -18,7 +18,7 @@ namespace DDTVWebAPI
         /// </summary>
         /// <param name="value">设定值</param>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<string?>> ConfigFilesplit(long value)
+        public async Task<Pack<string>> ConfigFilesplit(long value)
         {
             return await PostAsync<string>("config_filesplit", new Dictionary<string, string> { { "size", value.ToString() } });
 
@@ -29,7 +29,7 @@ namespace DDTVWebAPI
         /// </summary>
         /// <param name="value">设定值</param>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<string?>> ConfigDanmuRec(bool value)
+        public async Task<Pack<string>> ConfigDanmuRec(bool value)
         {
             return await PostAsync<string>("config_danmurec", new Dictionary<string, string> { { "state", value.ToString() } });
         }
@@ -39,7 +39,7 @@ namespace DDTVWebAPI
         /// 导入关注列表
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<Follow>?>> GetFollow()
+        public async Task<Pack<List<Follow>>> GetFollow()
         {
             return await PostAsync<List<Follow>>("config_getfollow", null);
         }

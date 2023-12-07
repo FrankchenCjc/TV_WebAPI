@@ -6,7 +6,7 @@ namespace DDTVWebAPI
         /// 获取已录制的文件列表  
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<string>?>> GetAllFileList()
+        public async Task<Pack<List<string>>> GetAllFileList()
         {
             return await PostAsync<List<string>>("File_GetAllFileList", null);
         }
@@ -15,7 +15,7 @@ namespace DDTVWebAPI
         /// 根据文件树结构返回已录制的文件总列表
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<FileNames>?>> GetFilePathList()
+        public async Task<Pack<List<FileNames>>> GetFilePathList()
         {
             return await PostAsync<List<FileNames>>("File_GetFilePathList", null);
         }
@@ -51,7 +51,7 @@ namespace DDTVWebAPI
         /// 分类获取已录制的文件总列表
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<FileList>?>> GetTypeFileList()
+        public async Task<Pack<List<FileList>>> GetTypeFileList()
         {
             return await PostAsync<List<FileList>>("File_GetTypeFileList", null);
         }

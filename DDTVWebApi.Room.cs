@@ -6,7 +6,7 @@ namespace DDTVWebAPI
         /// 获取房间详细配置信息
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<RoomDetail>?>> GetAllRoomDetail()
+        public async Task<Pack<List<RoomDetail>>> GetAllRoomDetail()
         {
             return await PostAsync<List<RoomDetail>>("Room_AllInfo", null);
         }
@@ -313,7 +313,7 @@ namespace DDTVWebAPI
         /// 获取房间简要配置信息
         /// </summary>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<List<RoomBrief>?>> GetAllRoomBrief()
+        public async Task<Pack<List<RoomBrief>>> GetAllRoomBrief()
         {
             return await PostAsync<List<RoomBrief>>("Room_SummaryInfo", null);
         }
@@ -365,9 +365,9 @@ namespace DDTVWebAPI
         /// </summary>
         /// <param name="UID">房间的UID</param>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<string?>> AddRoom(long UID)
+        public async Task<Pack<string>> AddRoom(long UID)
         {
-            return await PostAsync<string?>("Room_Add", new Dictionary<string, string> { { "UID", UID.ToString() } });
+            return await PostAsync<string>("Room_Add", new Dictionary<string, string> { { "UID", UID.ToString() } });
         }
 
         /// <summary>
@@ -375,9 +375,9 @@ namespace DDTVWebAPI
         /// </summary>
         /// <param name="UID">房间的UID</param>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<string?>> DelRoom(long UID)
+        public async Task<Pack<string>> DelRoom(long UID)
         {
-            return await PostAsync<string?>("Room_Del", new Dictionary<string, string> { { "UID", UID.ToString() } });
+            return await PostAsync<string>("Room_Del", new Dictionary<string, string> { { "UID", UID.ToString() } });
         }
 
         /// <summary>
@@ -386,9 +386,9 @@ namespace DDTVWebAPI
         /// <param name="UID">用户UID</param>
         /// <param name="Value">设定值</param>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<string?>> SetAutoRec(long UID, bool Value)
+        public async Task<Pack<string>> SetAutoRec(long UID, bool Value)
         {
-            return await PostAsync<string?>("Room_AutoRec", new Dictionary<string, string> { { "UID", UID.ToString() }, { "IsAutoRec", Value.ToString() } });
+            return await PostAsync<string>("Room_AutoRec", new Dictionary<string, string> { { "UID", UID.ToString() }, { "IsAutoRec", Value.ToString() } });
         }
 
         /// <summary>
@@ -397,9 +397,9 @@ namespace DDTVWebAPI
         /// <param name="UID">用户UID</param>
         /// <param name="Value">设定值</param>
         /// <returns>请使用Pack.GetData()取得数据结果，并处理异常</returns>
-        public async Task<Pack<string?>> SetRecDanmu(long UID, bool Value)
+        public async Task<Pack<string>> SetRecDanmu(long UID, bool Value)
         {
-            return await PostAsync<string?>("Room_DanmuRec", new Dictionary<string, string> { { "UID", UID.ToString() }, { "IsAutoRec", Value.ToString() } });
+            return await PostAsync<string>("Room_DanmuRec", new Dictionary<string, string> { { "UID", UID.ToString() }, { "IsRecDanmu", Value.ToString() } });
         }
     }
 }
