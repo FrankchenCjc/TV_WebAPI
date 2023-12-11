@@ -39,9 +39,9 @@ namespace DDTVWebAPI
                 get
                 {
                     return code == Code.Success
-                        ? _data ?? throw new Exception("空的值")
-                        : throw new Exception(this?.message ?? throw new Exception("空的值"));
-                }
+                        ? _data ?? throw new RequstException("空的值，未完成解析", code)
+                        : throw new RequstException(message, code);
+				}
                 set { _data = value; }
             }
             private TData? _data;
